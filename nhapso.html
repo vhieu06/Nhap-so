@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển đổi số</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .row {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .circle {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+        }
+        .C { background-color: #1E88E5; }  /* Xanh */
+        .L { background-color: #FFC107; }  /* Vàng */
+        .X { background-color: #D32F2F; }  /* Đỏ */
+        .T { background-color: #4CAF50; }  /* Xanh lá */
+    </style>
+</head>
+<body>
+
+
+    <input type="text" id="numberInput" placeholder="..." oninput="updateDisplay()">
+    
+    <div class="container">
+        <div class="row" id="clRow"></div> <!-- Hàng C/L -->
+        <div class="row" id="xtRow"></div> <!-- Hàng X/T -->
+    </div>
+
+    <script>
+        function updateDisplay() {
+            let inputText = document.getElementById("numberInput").value;
+            let numbers = inputText.split(/[\s,]+/).map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 0 && n <= 99);
+
+            let clRowHtml = "";
+            let xtRowHtml = "";
+
+            numbers.forEach(num => {
+                let cl = (num % 2 === 0) ? 'C' : 'L';
+                let xt = (num < 50) ? 'X' : 'T';
+
+                clRowHtml += `<span class="circle ${cl}">${cl}</span>`;
+                xtRowHtml += `<span class="circle ${xt}">${xt}</span>`;
+            });
+
+            document.getElementById("clRow").innerHTML = clRowHtml;
+            document.getElementById("xtRow").innerHTML = xtRowHtml;
+        }
+    </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Background Image</title>
+    <style>
+        body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Danh sách các ảnh trong thư mục
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        
+        fetch('.')
+            .then(response => response.text())
+            .then(text => {
+                // Tìm tất cả ảnh có trong thư mục
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const files = Array.from(doc.querySelectorAll('a'))
+                                   .map(a => a.href.split('/').pop())
+                                   .filter(file => imageExtensions.some(ext => file.toLowerCase().endsWith(ext)));
+                
+                if (files.length > 0) {
+                    document.body.style.backgroundImage = `url('${files[0]}')`; // Lấy ảnh đầu tiên làm nền
+                }
+            })
+            .catch(err => console.log("Không thể tải danh sách file:", err));
+    </script>
+</body>
+</html>
